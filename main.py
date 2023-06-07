@@ -1,4 +1,4 @@
-import logging_game
+import logging
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup,Update
 from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandler, Filters, CallbackQueryHandler
 import view_pole as view
@@ -6,6 +6,10 @@ import games
 import robot
 import user
 from random import randint
+
+# Включаем логироывние через logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                     level=logging.INFO)
 
 # Старт игры крестики-нолики
 def start_tic_tac_toe(update: Update, context: CallbackContext) -> None:
@@ -36,7 +40,6 @@ def set_size_pole(update: Update, context: CallbackContext) -> None:
                 size = int(context.args[0])
         except:
             update.message.reply_text('Введите одно целое число')
-            logging_game.logger.exception(f'Ошибка установки размера игрового поля. {context.args}')
         else:
             games.pole = games.pole_game_init(size)
             update.message.reply_text(view.view_pole_game())
@@ -59,7 +62,6 @@ def step_user(update: Update, context: CallbackContext) -> None:
         if games.old_command == '/size' or games.old_command == '/step':
             mark = 'X'
             result_step = user.user_input(games.pole, context.args)
-            logging_game.logger.info(f'Шаг пользователя: pole: {games.pole}; context: {context.args}')
             # если получены от пользователя координаты ячейки. иначе выводим информацию об ошибке
             if type(result_step) == tuple:
                 games.old_command = '/step'
@@ -88,7 +90,6 @@ def step_bot(update: Update, context: CallbackContext) -> None:
         (i, j) = robot_move
         games.pole_game_mark((i, j), mark)
         update.message.reply_text(view.view_pole_game())
-        logging_game.logger.info(f'Шаг robot: {robot_move}; pole: {games.pole}')
         # проверяем концовку игры
         result_game_end = games.game_end(mark)
         if result_game_end:
@@ -97,7 +98,6 @@ def step_bot(update: Update, context: CallbackContext) -> None:
         games.next_move = not games.next_move
         update.message.reply_text('Делайте ваш ход, команда /step номер строки, номер столбца, например, /step 2 3 ')
     else:
-        logging_game.logger.info('Игра окончена')
         update.message.reply_text('Игра окончена')
 
 # Обработчик помощи
@@ -113,7 +113,6 @@ def user_text(update: Update, context: CallbackContext):
 # Обработчик для неизвестной команды
 def unknown(update: Update, context: CallbackContext):
     update.message.reply_text('Неизвестная команда, не могу обработать')
-    logging_game.logger.warning(f'неизвестная команда: {context.args}')
 
 if __name__ == '__main__':
 # Регистрируем
