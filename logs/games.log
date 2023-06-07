@@ -1,5 +1,0 @@
-2023-06-07 16:36:33,962 - ERROR - Ошибка установки размера игрового поля. ['gr']
-Traceback (most recent call last):
-  File "C:\Users\sysman\Documents\GB\Контроль версий углублённо (GIT)\homework\main.py", line 36, in set_size_pole
-    size = int(context.args[0])
-ValueError: invalid literal for int() with base 10: 'gr'
