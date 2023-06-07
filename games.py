@@ -1,3 +1,5 @@
+import logging_game
+
 # Матрица ячеек игрового поля для выбора ботом доступного хода
 pole_game_var = []
 # Матрица игрового поля для маркировки хода
@@ -44,11 +46,11 @@ def game_end(mark):
     global game_exit
     if check_game_win(pole, mark):
         game_exit = True
-        return f'{mark} выйграли'
+        return f'{mark} выйграл(а)'
     else:
         game_exit = full_mark_pole()
         if game_exit:
-             return 'Ига окончена, все ячейки заполнены'
+             return 'Игра окончена, все ячейки заполнены'
 
 # проверка на заполненность всех ячеек игрового поля
 def full_mark_pole() -> bool:
@@ -66,6 +68,7 @@ def check_coordinates(pole: list, coordinates: tuple) -> bool:
         if pole[i - 1][j - 1] != '':
             return False
     except:
+        logging_game.logger.exception(f'Ошибка проверки ячейки: {coordinates}; pole: {pole}')
         return False
     else:
         return True
